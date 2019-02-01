@@ -21,7 +21,7 @@ _Note_: This was inspired by
 * Data Science
 
 ### Technologies
-* Python
+* Python 3.6
     * PyTorch
     * Possibly Tensorflow/Keras
     
