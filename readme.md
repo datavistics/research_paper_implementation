@@ -90,3 +90,5 @@ YOLO9000: https://arxiv.org/abs/1612.08242
 
 ## Contact
 * Feel free to contact me on my [github page](https://github.com/datavistics)
+
+_Special Thanks for [this](https://github.com/sfbrigade/data-science-wg/blob/master/dswg_project_resources/Project-README-template.md) Readme Template_
