@@ -147,6 +147,7 @@
 <span class="c1"># The CIFAR-10 dataset:</span>
 <span class="c1"># https://www.cs.toronto.edu/~kriz/cifar.html</span>
 
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">src.data_processing.utilities</span> <span class="k">import</span> <span class="n">download_and_unzip</span>
 <span class="kn">from</span> <span class="nn">global_fun</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
@@ -196,7 +197,8 @@
     <span class="k">return</span> <span class="n">unpickled_obj</span>
 
 
-<div class="viewcode-block" id="read_cifar_10"><a class="viewcode-back" href="../../../data_processing.html#src.data_processing.cifar_10_helper.read_cifar_10">[docs]</a><span class="k">def</span> <span class="nf">read_cifar_10</span><span class="p">(</span><span class="n">image_width</span><span class="p">,</span> <span class="n">image_height</span><span class="p">):</span>
+<div class="viewcode-block" id="read_cifar_10"><a class="viewcode-back" href="../../../data_processing.html#src.data_processing.cifar_10_helper.read_cifar_10">[docs]</a><span class="nd">@logspeed</span><span class="p">(</span><span class="n">module_logger</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">read_cifar_10</span><span class="p">(</span><span class="n">image_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">image_height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads data and returns train/test split.</span>
 
@@ -252,8 +254,8 @@
         <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
         <span class="n">Y</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
-        <span class="n">X_test</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
-        <span class="n">Y_test</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span>
+        <span class="n">X_test</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">Y_test</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_test</span></div>
 
