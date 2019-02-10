@@ -4,3 +4,4 @@ data/cifar-10-batches-py/
 data/cifar-10-python.tar.gz
 src/data_processing/__pycache__/
 docs/build/doctrees
+docs/build/html/.buildinfo
