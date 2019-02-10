@@ -1,8 +1,7 @@
 # Research Paper Implementation
 This project is written by [Derek Thomas](https://github.com/datavistics)
-This project is a part of the [Data Science Working Group](http://datascience.codeforsanfrancisco.org) at [Code for San Francisco](http://www.codeforsanfrancisco.org).  Other DSWG projects can be found at the [main GitHub repo](https://github.com/sfbrigade/data-science-wg).
 
-#### -- Project Status: [Active, On-Hold, Completed]
+#### -- Project Status: Active
 
 ## Project Intro/Objective
 The purpose of this project is to implement research papers. There are a few benefits I hope to achieve:
@@ -23,7 +22,7 @@ _Note_: This was inspired by
 ### Technologies
 * Python 3.6
     * PyTorch
-    * Possibly Tensorflow/Keras
+    * Possibly Tensorflow/Keras in the future
     
 ## Project Description
 ### Architectures
