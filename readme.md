@@ -1,5 +1,6 @@
 # Research Paper Implementation
 This project is written by [Derek Thomas](https://github.com/datavistics)
+More interesting technical documentation is held on the [github pages](https://datavistics.github.io/research_paper_implementation/docs/build/html/index.html)
 
 #### -- Project Status: Active
 
