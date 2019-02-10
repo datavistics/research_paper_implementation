@@ -2,9 +2,25 @@ import logging
 from functools import wraps
 from sys import stdout
 from timeit import default_timer as timer
+
 from proj_paths import *
 
+
 def module_logging(file, file_output: False = bool, level=logging.INFO):
+    """
+    Convenient logging handler
+    :param file: Name of logger
+    :type file: path-like
+    :param file_output: Write to logs or not
+    :type file_output: bool
+    :param level: logging level
+    :type level: int
+    Examples
+    --------
+    >>> module_logger = module_logging(__file__, False, logging.INFO)
+    >>> module_logger.info('This is an example')
+    02-10 17:37:58 project.file_name INFO     This is an example
+    """
     if isinstance(file, str):
         file = Path(file)
 
@@ -24,7 +40,9 @@ def parametrized(dec):
     def layer(*args, **kwargs):
         def repl(f):
             return dec(f, *args, **kwargs)
+
         return repl
+
     return layer
 
 

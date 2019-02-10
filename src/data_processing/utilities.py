@@ -6,6 +6,13 @@ module_logger = module_logging(__file__, False)
 
 
 def download_and_unzip(tar_url, outfile_path):
+    """
+    This is for convenience to download and unzip a tarfile
+    :param tar_url: The url should end in .tar.gz
+    :type tar_url: str
+    :param outfile_path: where to write the tar to
+    :type outfile_path: str or Path
+    """
     module_logger.info(f'Downloading from: {tar_url}')
     download_location = outfile_path/Path(tar_url).name
     urllib.request.urlretrieve(tar_url, outfile_path/Path(tar_url).name)

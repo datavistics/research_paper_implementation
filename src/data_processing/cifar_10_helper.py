@@ -2,6 +2,7 @@
 # The CIFAR-10 dataset:
 # https://www.cs.toronto.edu/~kriz/cifar.html
 
+import torch
 from src.data_processing.utilities import download_and_unzip
 from global_fun import *
 import pickle
@@ -20,7 +21,16 @@ module_logger = module_logging(__file__, False)
 
 
 @logspeed(module_logger)
-def get_cifar_10(force_download=False):
+def get_cifar_10(force_download: bool=False):
+    """
+    ``get_cifar_10`` will:
+        - Download data
+        - Unzip data
+        - Place data in correct dir
+
+    :param force_download: Will delete current download and re-download
+    :type force_download: bool
+    """
     if force_download:
         module_logger.info("Forcing Download")
         if cifar_10_dir.exists():
@@ -42,7 +52,18 @@ def __unpickle(file):
     return unpickled_obj
 
 
-def read_cifar_10(image_width, image_height):
+@logspeed(module_logger)
+def read_cifar_10(image_width: int, image_height: int, device: torch.device):
+    """
+    Reads data and returns train/test split.
+
+    :param image_width:
+    :type image_width: int
+    :param image_height:
+    :type image_height: int
+    :return: X_train, y_train, X_test, y_test
+    :rtype: tuple(np.array)
+    """
     batch_1 = __unpickle(batch_1_file)
     batch_2 = __unpickle(batch_2_file)
     batch_3 = __unpickle(batch_3_file)
@@ -88,8 +109,8 @@ def read_cifar_10(image_width, image_height):
         Y = np.zeros(shape=[len(classes)], dtype=np.int)
         Y[label] = 1
 
-        X_test[i] = X
-        Y_test[i] = Y
+        X_test[i] = torch.tensor(X, device=device)
+        Y_test[i] = torch.tensor(Y, device=device)
 
     return X_train, Y_train, X_test, Y_test
 
