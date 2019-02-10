@@ -20,7 +20,16 @@ module_logger = module_logging(__file__, False)
 
 
 @logspeed(module_logger)
-def get_cifar_10(force_download=False):
+def get_cifar_10(force_download: bool=False):
+    """
+    ``get_cifar_10`` will:
+        - Download data
+        - Unzip data
+        - Place data in correct dir
+
+    :param force_download: Will delete current download and re-download
+    :type force_download: bool
+    """
     if force_download:
         module_logger.info("Forcing Download")
         if cifar_10_dir.exists():
@@ -43,6 +52,16 @@ def __unpickle(file):
 
 
 def read_cifar_10(image_width, image_height):
+    """
+    Reads data and returns train/test split.
+
+    :param image_width:
+    :type image_width: int
+    :param image_height:
+    :type image_height: int
+    :return: X_train, y_train, X_test, y_test
+    :rtype: tuple(np.array)
+    """
     batch_1 = __unpickle(batch_1_file)
     batch_2 = __unpickle(batch_2_file)
     batch_3 = __unpickle(batch_3_file)
