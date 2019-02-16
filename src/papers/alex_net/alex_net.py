@@ -4,9 +4,10 @@ from tqdm import tqdm
 from torch import manual_seed
 import torch.optim as optim
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 from src.data_processing.cifar_10_helper import read_cifar_10
-from global_fun import module_logging
+from global_fun import *
 
 module_logger = module_logging(__file__, True)
 
@@ -15,76 +16,63 @@ import torchvision.transforms as transforms
 
 
 class AlexNet(torch.nn.Module):
-    """
+    f"""
+    .. image:: {Path(__file__).with_suffix('.png')}
+
+    Test
+
     :param seed: Random Seed for torch and numpy
     :type seed: int
+    :param num_of_classes:
+    :type num_of_classes: int
     """
 
-    def __init__(self, seed: int = 42):
+    def __init__(self, seed: int = 42, num_of_classes: int = 10):
         super().__init__()
 
         np.random.seed(seed)
         manual_seed(seed)
 
-        self.conv_1 = torch.nn.Conv2d(11, 11, kernel_size=96, stride=4, padding=0)
-        self.pool_1 = torch.nn.MaxPool2d(kernel_size=3, stride=2)
-
-        self.conv_2 = torch.nn.Conv2d(5, 5, kernel_size=256, stride=1, padding=2)
-        self.pool_2 = torch.nn.MaxPool2d(kernel_size=3, stride=2)
-
-        self.conv_3 = torch.nn.Conv2d(3, 3, kernel_size=384, stride=1, padding=1)
-
-        self.conv_4 = torch.nn.Conv2d(3, 3, kernel_size=384, stride=1, padding=1)
-
-        self.conv_5 = torch.nn.Conv2d(3, 3, kernel_size=256, stride=1, padding=1)
-        self.pool_5 = torch.nn.MaxPool2d(kernel_size=3, stride=2)
-
-        self.flat_1 = torch.nn.Linear(9216, 4096)
-        self.flat_2 = torch.nn.Linear(4096, 4096)
-        self.flat_3 = torch.nn.Linear(4096, 1000)
-
-        self.dropout = torch.nn.Dropout(0.5)
+        self.conv_layers = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=5),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(64, 192, kernel_size=5, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(192, 384, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(384, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+        )
+        self.classifier = nn.Linear(256, num_of_classes)
 
     def forward(self, x):
-        x = F.relu(self.conv_1(x))
-        x = F.relu(self.pool_1(x))
-
-        x = F.relu(self.conv_2(x))
-        x = F.relu(self.pool_2(x))
-
-        x = F.relu(self.conv_3(x))
-
-        x = F.relu(self.pool_4(x))
-
-        x = F.relu(self.conv_5(x))
-        x = F.relu(self.pool_5(x))
-
-        x = x.view(-1, 9216)
-
-        x = self.dropout(F.relu(self.flat_1(x)))
-        x = self.dropout(F.relu(self.flat_2(x)))
-
-        x = F.softmax(self.flat_3(x))
-
+        x = self.conv_layers(x)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
+        x = F.softmax(x, dim=0)
         return x
 
 
 if __name__ == '__main__':
-
     cuda = torch.device('cuda')
     transform = transforms.Compose(
         [transforms.ToTensor(),
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                            download=True,)
-                                            # transform=transform)
+    trainset = torchvision.datasets.CIFAR10(root=data_dir, train=True,
+                                            download=True,
+                                            transform=transform)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
                                               shuffle=True, num_workers=2)
 
-    testset = torchvision.datasets.CIFAR10(root='./data', train=False,
-                                           download=True,)
-                                           # transform=transform)
+    testset = torchvision.datasets.CIFAR10(root=data_dir, train=False,
+                                           download=True,
+                                           transform=transform)
     testloader = torch.utils.data.DataLoader(testset, batch_size=4,
                                              shuffle=False, num_workers=2)
 
@@ -119,3 +107,11 @@ if __name__ == '__main__':
                 running_loss = 0.0
 
     module_logger.info('Finished Training')
+
+    torch.save(an,
+               proj_dir / 'models' / 'alex_net_cifar_10.pth')
+
+    # output = torch.onnx.export(an,
+    #                            torch.from_numpy(testset.test_data),
+    #                            proj_dir / 'models' / 'alex_net_cifar_10.onnx',
+    #                            verbose=False)
